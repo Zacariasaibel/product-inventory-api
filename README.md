@@ -1,99 +1,25 @@
 # Product Inventory API
 
-Eine REST API zur Verwaltung eines Produktbestands, entwickelt mit Django und Django REST Framework.
+REST-API zum Verwalten von Produkten und Beständen. Django REST Framework bietet JSON und eine Oberfläche im Browser. Es gibt kein separates Frontend.
 
-Das Projekt entstand während meiner Umschulung zum Fachinformatiker für Anwendungsentwicklung und demonstriert die grundlegenden CRUD-Funktionen einer Backend-API.
+## Ausprobieren
 
-## Funktionen
-
-- Alle Produkte abrufen
-- Einzelnes Produkt anhand seiner ID abrufen
-- Neue Produkte erstellen
-- Bestehende Produkte vollständig oder teilweise aktualisieren
-- Produkte löschen
-- Verarbeitung und Ausgabe von JSON-Daten
-- CORS-Unterstützung für die Verbindung mit einem Frontend
-
-## Technologien
-
-- Python
-- Django
-- Django REST Framework
-- SQLite
-- django-cors-headers
-- Git und GitHub
-
-## API-Endpunkte
-
-| Methode | Endpunkt | Beschreibung |
-|---|---|---|
-| GET | `/api/products/` | Alle Produkte abrufen |
-| POST | `/api/products/create/` | Neues Produkt erstellen |
-| GET | `/api/products/<id>/` | Einzelnes Produkt abrufen |
-| PUT | `/api/products/<id>/` | Produkt vollständig aktualisieren |
-| PATCH | `/api/products/<id>/` | Produkt teilweise aktualisieren |
-| DELETE | `/api/products/<id>/` | Produkt löschen |
-
-## Produktstruktur
-
-```json
-{
-  "id": 1,
-  "name": "Wireless Headphones",
-  "short_description": "Compact wireless headphones",
-  "product_description": "Wireless headphones with noise cancellation and long battery life.",
-  "stock": 15,
-  "price": "89.99"
-}
-```
-
-## Lokale Installation
-
-Repository klonen:
-
-```bash
-git clone https://github.com/Zacariasaibel/product-inventory-api.git
-cd product-inventory-api
-```
-
-Virtuelle Umgebung erstellen und aktivieren:
+Python 3.13 oder neuer und die Abhängigkeiten aus `requirements.txt` werden benötigt:
 
 ```powershell
 py -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py seed_demo
+.\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Abhängigkeiten installieren:
+Unter `http://127.0.0.1:8000/api/products/` die Liste ansehen. Unter `/api/products/create/` ein Produkt anlegen. Unter `/api/products/<id>/` ein Produkt lesen, mit PUT oder PATCH ändern und mit DELETE entfernen. Die Browseroberfläche enthält die passenden Formulare. Preis und Bestand dürfen nicht negativ sein. Ein Produkt und sein Bestand werden gemeinsam gespeichert.
 
-```powershell
-python -m pip install -r requirements.txt
-```
+## Technik und Grenzen
 
-Datenbank vorbereiten:
+Python, Django, Django REST Framework, SQLite und django-cors-headers. Die API hat keine Benutzerverwaltung für Produktzugriffe. Nur fiktive Daten verwenden; die Entwicklungs-Konfiguration ist kein privater Produktivdienst.
 
-```powershell
-python manage.py migrate
-```
+Eine öffentliche Demo ist noch nicht veröffentlicht. Die [vorbereitete Demo-Konfiguration](docs/demo-deployment.md) trennt Beispieldaten von lokalen Daten und dokumentiert das Zurücksetzen. Es wurde kein zusätzlicher kostenpflichtiger Dienst eingerichtet.
 
-Entwicklungsserver starten:
-
-```powershell
-python manage.py runserver
-```
-
-Die API ist anschließend unter folgender Adresse erreichbar:
-
-```text
-http://127.0.0.1:8000/api/products/
-```
-
-## Sicherheit
-
-Der Django `SECRET_KEY` wird über eine Umgebungsvariable eingelesen und nicht im Repository veröffentlicht. Lokale Datenbanken und virtuelle Umgebungen sind ebenfalls von Git ausgeschlossen.
-
-## Autor
-
-**Zacarias Aibbich Belhadj**
-
-- Portfolio: https://zacariasaibel.github.io/
-- GitHub: https://github.com/Zacariasaibel
+Prüfen: `.\.venv\Scripts\python.exe manage.py test products`. Ergebnisse und Grenzen stehen im [Prüfbericht](docs/verification.md).
