@@ -1,25 +1,59 @@
 # Product Inventory API
 
-REST-API zum Verwalten von Produkten und Beständen. Django REST Framework bietet JSON und eine Oberfläche im Browser. Es gibt kein separates Frontend.
+Dieses Projekt entstand aus einer Backend-Aufgabe während meiner Umschulung: Produkte und ihre Bestände sollten über eine REST-API verwaltet werden können.
 
-## Ausprobieren
+Dabei wollte ich lernen, wie Datenmodelle, Eingabeprüfung und Datenbankzugriffe zusammenspielen. Das Ergebnis ist eine API, die sich direkt im Browser ausprobieren lässt.
 
-Python 3.13 oder neuer und die Abhängigkeiten aus `requirements.txt` werden benötigt:
+## Was die API kann
+
+Produkte lassen sich anlegen, anzeigen, bearbeiten und löschen. Zu jedem Produkt gehört ein Bestand.
+
+| Methode | Adresse | Funktion |
+| --- | --- | --- |
+| GET | `/api/products/` | Alle Produkte anzeigen |
+| POST | `/api/products/create/` | Ein Produkt anlegen |
+| GET | `/api/products/<id>/` | Ein einzelnes Produkt anzeigen |
+| PUT / PATCH | `/api/products/<id>/` | Ein Produkt und seinen Bestand bearbeiten |
+| DELETE | `/api/products/<id>/` | Ein Produkt entfernen |
+
+Django REST Framework liefert die Daten als JSON und stellt eine Browseroberfläche mit passenden Formularen bereit. Ein separates Frontend wird dafür nicht benötigt.
+
+## Technische Entscheidungen
+
+Die Anwendung verwendet Python, Django, Django REST Framework, SQLite und django-cors-headers.
+
+Preis und Bestand dürfen nicht negativ sein. Ungültige Eingaben werden mit einer Fehlermeldung zurückgewiesen.
+
+Produkt und Bestand werden gemeinsam in einer Datenbanktransaktion gespeichert. Schlägt die Speicherung fehl, wird die Änderung zurückgerollt. Dadurch bleiben die zusammengehörigen Daten konsistent.
+
+## Lokal ausprobieren
+
+Voraussetzung: Python 3.13. Im Projektordner ein PowerShell-Terminal öffnen:
 
 ```powershell
-py -m venv .venv
+py -3.13 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe manage.py migrate
 .\.venv\Scripts\python.exe manage.py seed_demo
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Unter `http://127.0.0.1:8000/api/products/` die Liste ansehen. Unter `/api/products/create/` ein Produkt anlegen. Unter `/api/products/<id>/` ein Produkt lesen, mit PUT oder PATCH ändern und mit DELETE entfernen. Die Browseroberfläche enthält die passenden Formulare. Preis und Bestand dürfen nicht negativ sein. Ein Produkt und sein Bestand werden gemeinsam gespeichert.
+Anschließend <http://127.0.0.1:8000/api/products/> öffnen.
 
-## Technik und Grenzen
+Zum Anlegen eines Produkts die Adresse <http://127.0.0.1:8000/api/products/create/> aufrufen. Für ein vorhandenes Produkt wird dessen ID in die Detailadresse eingesetzt, beispielsweise `/api/products/1/`.
 
-Python, Django, Django REST Framework, SQLite und django-cors-headers. Die API hat keine Benutzerverwaltung für Produktzugriffe. Nur fiktive Daten verwenden; die Entwicklungs-Konfiguration ist kein privater Produktivdienst.
+## Demo und Grenzen
 
-Eine öffentliche Demo ist noch nicht veröffentlicht. Die [vorbereitete Demo-Konfiguration](docs/demo-deployment.md) trennt Beispieldaten von lokalen Daten und dokumentiert das Zurücksetzen. Es wurde kein zusätzlicher kostenpflichtiger Dienst eingerichtet.
+Eine öffentliche Demo ist noch nicht veröffentlicht. Die [vorbereitete Demo-Konfiguration](docs/demo-deployment.md) verwendet eine getrennte Datenbank für Beispieldaten und erklärt das Zurücksetzen.
 
-Prüfen: `.\.venv\Scripts\python.exe manage.py test products`. Ergebnisse und Grenzen stehen im [Prüfbericht](docs/verification.md).
+Produktzugriffe sind ohne Anmeldung möglich. Bitte ausschließlich fiktive Daten verwenden. Die Entwicklungs-Konfiguration ist für lokale Tests vorgesehen.
+
+## Prüfungen
+
+Die Backend-Tests lassen sich im Projektordner ausführen:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test products
+```
+
+Die dokumentierten Ergebnisse und Grenzen stehen im [Prüfbericht](docs/verification.md).
